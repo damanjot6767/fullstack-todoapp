@@ -3,12 +3,12 @@ const UserModel = require("../modals/user.model");
 const jwt = require("jsonwebtoken")
 require("dotenv").config();
 
-const SECRET=process.env.SECRET;
-const REFRESH=process.env.REFRESH;
+const SECRET=process.env.KEY;
+
 
 const AuthRouter = express.Router();
 
-//for reguster
+//for register
 AuthRouter.post("/register",async(req,res)=>{
     const{name,password,email,username}=req.body;
    try{
@@ -29,7 +29,6 @@ AuthRouter.post("/login",async(req,res)=>{
         const user = await UserModel.findOne({email,password});
     if(user){
         const token = jwt.sign({id:user._id,name:user.name,email:user.email,username:user.username},SECRET,{expiresIn:"7 days"});
-        // const Refreshtoken = jwt.sign({id:user._id,name:user.name,email:user.email,username:user.username},REFRESH,{expiresIn:"28 days"});
         return res.status(200).send({message:"login success",token:token,userid:user._id})
     }
     return res.status(401).send("user not found invalid details")
@@ -39,6 +38,7 @@ AuthRouter.post("/login",async(req,res)=>{
     }
 })
 
+//for logout
 AuthRouter.get("/logout",async(req,res)=>{
     try{
         console.log("yes")
